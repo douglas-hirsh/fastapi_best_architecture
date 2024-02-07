@@ -4,6 +4,8 @@
 [![Static Badge](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
+This fork is an attempt to translate all of the comments and documentation into English. Everything else stays the same. I'm open to PRs if anyone wants to help correct some of the translations. All of the translations came from gathering all of the Chinese throughout all of the files and then running it through the OpenAI API to translate. Then another script went through and did a find and replace. I'm sure there sentences that need a bit of correction.
+
 > [!CAUTION]
 > **For 2023-12-21 (announcement)**
 >
