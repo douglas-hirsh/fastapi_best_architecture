@@ -59,10 +59,10 @@ class CRUDUser(CRUDBase[User, RegisterUserParam, UpdateUserParam]):
 
     @staticmethod
     async def update_role(db: AsyncSession, input_user: User, obj: UpdateUserRoleParam) -> None:
-        # 删除用户所有角色
+        # Remove all user roles
         for i in list(input_user.roles):
             input_user.roles.remove(i)
-        # 添加用户角色
+        # Add user role
         role_list = []
         for role_id in obj.roles:
             role_list.append(await db.get(Role, role_id))

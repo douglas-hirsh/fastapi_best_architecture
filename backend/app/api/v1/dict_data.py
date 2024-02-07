@@ -17,7 +17,7 @@ from backend.app.utils.serializers import select_as_dict
 router = APIRouter()
 
 
-@router.get('/{pk}', summary='获取字典详情', dependencies=[DependsJwtAuth])
+@router.get('/{pk}', summary='Get dictionary details', dependencies=[DependsJwtAuth])
 async def get_dict_data(pk: Annotated[int, Path(...)]) -> ResponseModel:
     dict_data = await dict_data_service.get(pk=pk)
     data = GetDictDataListDetails(**await select_as_dict(dict_data))
@@ -26,7 +26,7 @@ async def get_dict_data(pk: Annotated[int, Path(...)]) -> ResponseModel:
 
 @router.get(
     '',
-    summary='（模糊条件）分页获取所有字典',
+    summary='(Fuzzy condition) Pagination to get all dictionaries.',
     dependencies=[
         DependsJwtAuth,
         DependsPagination,
@@ -45,7 +45,7 @@ async def get_pagination_dict_datas(
 
 @router.post(
     '',
-    summary='创建字典',
+    summary='Create dictionary.',
     dependencies=[
         Depends(RequestPermission('sys:dict:data:add')),
         DependsRBAC,
@@ -58,7 +58,7 @@ async def create_dict_data(obj: CreateDictDataParam) -> ResponseModel:
 
 @router.put(
     '/{pk}',
-    summary='更新字典',
+    summary='Update dictionary',
     dependencies=[
         Depends(RequestPermission('sys:dict:data:edit')),
         DependsRBAC,
@@ -73,7 +73,7 @@ async def update_dict_data(pk: Annotated[int, Path(...)], obj: UpdateDictDataPar
 
 @router.delete(
     '',
-    summary='（批量）删除字典',
+    summary='(batch) Delete',
     dependencies=[
         Depends(RequestPermission('sys:dict:data:del')),
         DependsRBAC,

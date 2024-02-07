@@ -21,7 +21,7 @@ from backend.app.utils.serializers import MsgSpecJSONResponse
 
 async def _validation_exception_handler(request: Request, e: RequestValidationError | ValidationError):
     """
-    数据验证异常处理
+    Data validation exception handling
 
     :param e:
     :return:
@@ -43,20 +43,20 @@ async def _validation_exception_handler(request: Request, e: RequestValidationEr
         errors.append(error)
     error = errors[0]
     if error.get('type') == 'json_invalid':
-        message = 'json解析失败'
+        message = 'jsonAnalysis failed.'
     else:
         error_input = error.get('input')
         field = str(error.get('loc')[-1])
         error_msg = error.get('msg')
-        message = f'{field} {error_msg}，输入：{error_input}'
-    msg = f'请求参数非法: {message}'
+        message = f'{field} {error_msg},Enter: {error_input}'
+    msg = f'Illegal request parameters: {message}'
     data = {'errors': errors} if settings.ENVIRONMENT == 'dev' else None
     content = {
         'code': StandardResponseCode.HTTP_422,
         'msg': msg,
         'data': data,
     }
-    request.state.__request_validation_exception__ = content  # 用于在中间件中获取异常信息
+    request.state.__request_validation_exception__ = content  # Used to obtain exception information in middleware.
     return MsgSpecJSONResponse(status_code=422, content=content)
 
 
@@ -64,7 +64,7 @@ def register_exception(app: FastAPI):
     @app.exception_handler(HTTPException)
     async def http_exception_handler(request: Request, exc: HTTPException):
         """
-        全局HTTP异常处理
+        overallHTTPException handling
 
         :param request:
         :param exc:
@@ -79,7 +79,7 @@ def register_exception(app: FastAPI):
         else:
             res = await response_base.fail(res=CustomResponseCode.HTTP_400)
             content = res.model_dump()
-        request.state.__request_http_exception__ = content  # 用于在中间件中获取异常信息
+        request.state.__request_http_exception__ = content  # Used to obtain exception information in middleware.
         return MsgSpecJSONResponse(
             status_code=StandardResponseCode.HTTP_400,
             content=content,
@@ -89,7 +89,7 @@ def register_exception(app: FastAPI):
     @app.exception_handler(RequestValidationError)
     async def fastapi_validation_exception_handler(request: Request, exc: RequestValidationError):
         """
-        fastapi 数据验证异常处理
+        fastapi Data validation exception handling
 
         :param request:
         :param exc:
@@ -100,7 +100,7 @@ def register_exception(app: FastAPI):
     @app.exception_handler(ValidationError)
     async def pydantic_validation_exception_handler(request: Request, exc: ValidationError):
         """
-        pydantic 数据验证异常处理
+        pydantic Data validation exception handling
 
         :param request:
         :param exc:
@@ -111,7 +111,7 @@ def register_exception(app: FastAPI):
     @app.exception_handler(PydanticUserError)
     async def pydantic_user_error_handler(request: Request, exc: PydanticUserError):
         """
-        Pydantic 用户异常处理
+        Pydantic userException handling
 
         :param request:
         :param exc:
@@ -129,7 +129,7 @@ def register_exception(app: FastAPI):
     @app.exception_handler(AssertionError)
     async def assertion_error_handler(request: Request, exc: AssertionError):
         """
-        断言错误处理
+        assertion error handling
 
         :param request:
         :param exc:
@@ -152,7 +152,7 @@ def register_exception(app: FastAPI):
     @app.exception_handler(Exception)
     async def all_exception_handler(request: Request, exc: Exception):
         """
-        全局异常处理
+        overallException handling
 
         :param request:
         :param exc:
@@ -171,7 +171,7 @@ def register_exception(app: FastAPI):
         else:
             import traceback
 
-            log.error(f'未知异常: {exc}')
+            log.error(f'Unknown Exception: {exc}')
             log.error(traceback.format_exc())
             if settings.ENVIRONMENT == 'dev':
                 content = {
@@ -189,7 +189,7 @@ def register_exception(app: FastAPI):
         @app.exception_handler(StandardResponseCode.HTTP_500)
         async def cors_status_code_500_exception_handler(request, exc):
             """
-            跨域 500 异常处理
+            Cross-domain 500 Exception handling
 
             `Related issue <https://github.com/encode/starlette/issues/1175>`_
 

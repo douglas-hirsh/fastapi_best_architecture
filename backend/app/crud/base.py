@@ -27,7 +27,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         del_flag: int | None = None,
     ) -> ModelType | None:
         """
-        通过主键 id 或者 name 获取一条数据
+        Through the primary key id or name Retrieve
 
         :param db:
         :param pk:
@@ -36,14 +36,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param del_flag:
         :return:
         """
-        assert pk is not None or name is not None, '查询错误, pk 和 name 参数不能同时为空'
-        assert pk is None or name is None, '查询错误, pk 和 name 参数不能同时存在'
+        assert pk is not None or name is not None, 'Query error, pk and name Parameters cannot be empty at the same time.'
+        assert pk is None or name is None, 'Query error, pk and name parameters cannot exist simultaneously'
         where_list = [self.model.id == pk] if pk is not None else [self.model.name == name]
         if status is not None:
-            assert status in (0, 1), '查询错误, status 参数只能为 0 或 1'
+            assert status in (0, 1), 'Query error, status parameter 0 or 1'
             where_list.append(self.model.status == status)
         if del_flag is not None:
-            assert del_flag in (0, 1), '查询错误, del_flag 参数只能为 0 或 1'
+            assert del_flag in (0, 1), 'Query error, del_flag parameter 0 or 1'
             where_list.append(self.model.del_flag == del_flag)
 
         result = await db.execute(select(self.model).where(and_(*where_list)))
@@ -51,10 +51,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def create_(self, db: AsyncSession, obj_in: CreateSchemaType, user_id: int | None = None) -> None:
         """
-        新增一条数据
+        Add a piece of data.
 
         :param db:
-        :param obj_in: Pydantic 模型类
+        :param obj_in: Pydantic Model class
         :param user_id:
         :return:
         """
@@ -68,11 +68,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self, db: AsyncSession, pk: int, obj_in: UpdateSchemaType | Dict[str, Any], user_id: int | None = None
     ) -> int:
         """
-        通过主键 id 更新一条数据
+        Through the primary key id update
 
         :param db:
         :param pk:
-        :param obj_in: Pydantic模型类 or 对应数据库字段的字典
+        :param obj_in: PydanticModel class or Corresponding database field dictionary
         :param user_id:
         :return:
         """
@@ -87,7 +87,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def delete_(self, db: AsyncSession, pk: int, *, del_flag: int | None = None) -> int:
         """
-        通过主键 id 删除一条数据
+        Through the primary key id Delete
 
         :param db:
         :param pk:
@@ -97,6 +97,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if del_flag is None:
             result = await db.execute(delete(self.model).where(self.model.id == pk))
         else:
-            assert del_flag == 1, '删除错误, del_flag 参数只能为 1'
+            assert del_flag == 1, 'Delete, del_flag parameter 1'
             result = await db.execute(update(self.model).where(self.model.id == pk).values(del_flag=del_flag))
         return result.rowcount

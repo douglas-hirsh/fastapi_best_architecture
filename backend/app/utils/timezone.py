@@ -13,7 +13,7 @@ class TimeZone:
 
     def now(self) -> datetime:
         """
-        获取时区时间
+        Obtain time zone time
 
         :return:
         """
@@ -21,7 +21,7 @@ class TimeZone:
 
     def f_datetime(self, dt: datetime) -> datetime:
         """
-        datetime 时间转时区时间
+        datetime Timezone time
 
         :param dt:
         :return:
@@ -30,7 +30,7 @@ class TimeZone:
 
     def f_str(self, date_str: str, format_str: str = settings.DATETIME_FORMAT) -> datetime:
         """
-        时间字符串转时区时间
+        Time string to time zone time
 
         :param date_str:
         :param format_str:

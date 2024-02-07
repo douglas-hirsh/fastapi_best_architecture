@@ -87,7 +87,7 @@ async def create_refresh_token(sub: str, expire_time: datetime | None = None, **
         expire_datetime = timezone.f_datetime(expire_time)
         current_datetime = timezone.now()
         if expire_datetime < current_datetime:
-            raise TokenError(msg='Refresh Token 过期时间无效')
+            raise TokenError(msg='Refresh Token Expiration date invalid')
         expire_seconds = int((expire_datetime - current_datetime).total_seconds())
     else:
         expire = timezone.now() + timedelta(seconds=settings.TOKEN_EXPIRE_SECONDS)
@@ -114,7 +114,7 @@ async def create_new_token(sub: str, token: str, refresh_token: str, **kwargs) -
     """
     redis_refresh_token = await redis_client.get(f'{settings.TOKEN_REFRESH_REDIS_PREFIX}:{sub}:{refresh_token}')
     if not redis_refresh_token or redis_refresh_token != refresh_token:
-        raise TokenError(msg='Refresh Token 已过期')
+        raise TokenError(msg='Refresh Token Expired')
     new_access_token, new_access_token_expire_time = await create_access_token(sub, **kwargs)
     new_refresh_token, new_refresh_token_expire_time = await create_refresh_token(sub, **kwargs)
     token_key = f'{settings.TOKEN_REDIS_PREFIX}:{sub}:{token}'
@@ -134,7 +134,7 @@ def get_token(request: Request) -> str:
     authorization = request.headers.get('Authorization')
     scheme, token = get_authorization_scheme_param(authorization)
     if not authorization or scheme.lower() != 'bearer':
-        raise TokenError(msg='Token 无效')
+        raise TokenError(msg='Token Invalid')
     return token
 
 
@@ -150,11 +150,11 @@ def jwt_decode(token: str) -> int:
         payload = jwt.decode(token, settings.TOKEN_SECRET_KEY, algorithms=[settings.TOKEN_ALGORITHM])
         user_id = int(payload.get('sub'))
         if not user_id:
-            raise TokenError(msg='Token 无效')
+            raise TokenError(msg='Token Invalid')
     except jwt.ExpiredSignatureError:
-        raise TokenError(msg='Token 已过期')
+        raise TokenError(msg='Token Expired')
     except (jwt.JWTError, Exception):
-        raise TokenError(msg='Token 无效')
+        raise TokenError(msg='Token Invalid')
     return user_id
 
 
@@ -169,7 +169,7 @@ async def jwt_authentication(token: str) -> dict[str, int]:
     key = f'{settings.TOKEN_REDIS_PREFIX}:{user_id}:{token}'
     token_verify = await redis_client.get(key)
     if not token_verify:
-        raise TokenError(msg='Token 已过期')
+        raise TokenError(msg='Token Expired')
     return {'sub': user_id}
 
 
@@ -184,18 +184,18 @@ async def get_current_user(db: AsyncSession, data: dict) -> User:
     user_id = data.get('sub')
     user = await user_dao.get_with_relation(db, user_id=user_id)
     if not user:
-        raise TokenError(msg='Token 无效')
+        raise TokenError(msg='Token Invalid')
     if not user.status:
-        raise AuthorizationError(msg='用户已锁定')
+        raise AuthorizationError(msg='User has locked.')
     if user.dept_id:
         if not user.dept.status:
-            raise AuthorizationError(msg='用户所属部门已锁定')
+            raise AuthorizationError(msg='Department of the user has been locked.')
         if user.dept.del_flag:
-            raise AuthorizationError(msg='用户所属部门已删除')
+            raise AuthorizationError(msg="User's department has been deleted.")
     if user.roles:
         role_status = [role.status for role in user.roles]
         if all(status == 0 for status in role_status):
-            raise AuthorizationError(msg='用户所属角色已锁定')
+            raise AuthorizationError(msg='User role locked')
     return user
 
 
@@ -209,7 +209,7 @@ def superuser_verify(request: Request) -> bool:
     """
     is_superuser = request.user.is_superuser
     if not is_superuser:
-        raise AuthorizationError(msg='仅管理员有权操作')
+        raise AuthorizationError(msg='Only administrators have the right to operate.')
     if not request.user.is_staff:
-        raise AuthorizationError(msg='此管理员已被禁止后台管理操作')
+        raise AuthorizationError(msg='This administrator has been banned from backstage management operations.')
     return is_superuser

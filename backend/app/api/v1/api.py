@@ -16,13 +16,13 @@ from backend.app.services.api_service import api_service
 router = APIRouter()
 
 
-@router.get('/all', summary='获取所有接口', dependencies=[DependsJwtAuth])
+@router.get('/all', summary='Get all interfaces', dependencies=[DependsJwtAuth])
 async def get_all_apis() -> ResponseModel:
     data = await api_service.get_api_list()
     return await response_base.success(data=data)
 
 
-@router.get('/{pk}', summary='获取接口详情', dependencies=[DependsJwtAuth])
+@router.get('/{pk}', summary='Get interface details.', dependencies=[DependsJwtAuth])
 async def get_api(pk: Annotated[int, Path(...)]) -> ResponseModel:
     api = await api_service.get(pk=pk)
     return await response_base.success(data=api)
@@ -30,7 +30,7 @@ async def get_api(pk: Annotated[int, Path(...)]) -> ResponseModel:
 
 @router.get(
     '',
-    summary='（模糊条件）分页获取所有接口',
+    summary='(Fuzzy condition) paginationGet all interfaces',
     dependencies=[
         DependsJwtAuth,
         DependsPagination,
@@ -49,7 +49,7 @@ async def get_pagination_apis(
 
 @router.post(
     '',
-    summary='创建接口',
+    summary='create',
     dependencies=[
         Depends(RequestPermission('sys:api:add')),
         DependsRBAC,
@@ -62,7 +62,7 @@ async def create_api(obj: CreateApiParam) -> ResponseModel:
 
 @router.put(
     '/{pk}',
-    summary='更新接口',
+    summary='Update interface',
     dependencies=[
         Depends(RequestPermission('sys:api:edit')),
         DependsRBAC,
@@ -77,7 +77,7 @@ async def update_api(pk: Annotated[int, Path(...)], obj: UpdateApiParam) -> Resp
 
 @router.delete(
     '',
-    summary='（批量）删除接口',
+    summary='(batch) Delete interface',
     dependencies=[
         Depends(RequestPermission('sys:api:del')),
         DependsRBAC,

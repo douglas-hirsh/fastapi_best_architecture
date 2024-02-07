@@ -16,7 +16,7 @@ class DeptService:
         async with async_db_session() as db:
             dept = await dept_dao.get(db, pk)
             if not dept:
-                raise errors.NotFoundError(msg='部门不存在')
+                raise errors.NotFoundError(msg='Department does not exist')
             return dept
 
     @staticmethod
@@ -33,11 +33,11 @@ class DeptService:
         async with async_db_session.begin() as db:
             dept = await dept_dao.get_by_name(db, obj.name)
             if dept:
-                raise errors.ForbiddenError(msg='部门名称已存在')
+                raise errors.ForbiddenError(msg='Department name already exists.')
             if obj.parent_id:
                 parent_dept = await dept_dao.get(db, obj.parent_id)
                 if not parent_dept:
-                    raise errors.NotFoundError(msg='父级部门不存在')
+                    raise errors.NotFoundError(msg='fatherDepartment does not exist')
             await dept_dao.create(db, obj)
 
     @staticmethod
@@ -45,16 +45,16 @@ class DeptService:
         async with async_db_session.begin() as db:
             dept = await dept_dao.get(db, pk)
             if not dept:
-                raise errors.NotFoundError(msg='部门不存在')
+                raise errors.NotFoundError(msg='Department does not exist')
             if dept.name != obj.name:
                 if await dept_dao.get_by_name(db, obj.name):
-                    raise errors.ForbiddenError(msg='部门名称已存在')
+                    raise errors.ForbiddenError(msg='Department name already exists.')
             if obj.parent_id:
                 parent_dept = await dept_dao.get(db, obj.parent_id)
                 if not parent_dept:
-                    raise errors.NotFoundError(msg='父级部门不存在')
+                    raise errors.NotFoundError(msg='fatherDepartment does not exist')
             if obj.parent_id == dept.id:
-                raise errors.ForbiddenError(msg='禁止关联自身为父级')
+                raise errors.ForbiddenError(msg='Prohibited to associate itself as a parent level.')
             count = await dept_dao.update(db, pk, obj)
             return count
 
@@ -63,10 +63,10 @@ class DeptService:
         async with async_db_session.begin() as db:
             dept_user = await dept_dao.get_user_relation(db, pk)
             if dept_user:
-                raise errors.ForbiddenError(msg='部门下存在用户，无法删除')
+                raise errors.ForbiddenError(msg='Department has users.,Unable to delete')
             children = await dept_dao.get_children(db, pk)
             if children:
-                raise errors.ForbiddenError(msg='部门下存在子部门，无法删除')
+                raise errors.ForbiddenError(msg='Department exists sub-department,Unable to delete')
             count = await dept_dao.delete(db, pk)
             return count
 

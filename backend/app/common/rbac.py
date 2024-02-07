@@ -18,11 +18,11 @@ class RBAC:
     @staticmethod
     async def enforcer() -> casbin.AsyncEnforcer:
         """
-        获取 casbin 执行器
+        Get casbin Executor
 
         :return:
         """
-        # 规则数据作为死数据直接在方法内定义
+        # As static data, the rules data are directly defined within the method.
         _CASBIN_RBAC_MODEL_CONF_TEXT = """
         [request_definition]
         r = sub, obj, act
@@ -47,40 +47,40 @@ class RBAC:
 
     async def rbac_verify(self, request: Request, _token: str = DependsJwtAuth) -> None:
         """
-        RBAC 权限校验
+        RBAC Permission verification
 
         :param request:
         :param _token:
         :return:
         """
         path = request.url.path
-        # 鉴权白名单
+        # Authentication whitelist
         if path in settings.TOKEN_EXCLUDE:
             return
-        # JWT 授权状态强制校验
+        # JWT Authorization status mandatory check
         if not request.auth.scopes:
             raise TokenError
-        # 超级管理员免校验
+        # Super Admin Exemption Verification
         if request.user.is_superuser:
             return
-        # 检测角色数据权限范围
+        # Check the character's data authorization scope.
         user_roles = request.user.roles
         if not user_roles:
-            raise AuthorizationError(msg='用户未分配角色，授权失败')
+            raise AuthorizationError(msg='User is not assigned a role.,Authorization failure')
         if not any(len(role.menus) > 0 for role in user_roles):
-            raise AuthorizationError(msg='用户所属角色未分配菜单，授权失败')
+            raise AuthorizationError(msg='User\'s assigned role has no assigned menu.,Authorization failure')
         method = request.method
         if method != MethodType.GET or method != MethodType.OPTIONS:
             if not request.user.is_staff:
-                raise AuthorizationError(msg='此用户已被禁止后台管理操作')
-        # 数据权限范围
+                raise AuthorizationError(msg='This user has been banned from backend management operations.')
+        # Data permission scope
         data_scope = any(role.data_scope == 1 for role in user_roles)
         if data_scope:
             return
         user_uuid = request.user.uuid
         path_auth_perm = request.state.permission
         if settings.PERMISSION_MODE == 'role-menu':
-            # 角色菜单权限校验
+            # Role menuPermission verification
             if path_auth_perm in set(settings.ROLE_MENU_EXCLUDE):
                 return
             user_menu_perms = await redis_client.get(f'{settings.PERMISSION_REDIS_PREFIX}:{user_uuid}:enable')
@@ -105,11 +105,11 @@ class RBAC:
                     f'{settings.PERMISSION_REDIS_PREFIX}:{user_uuid}:disable', ','.join(user_forbid_menu_perms)
                 )
             if path_auth_perm in user_forbid_menu_perms:
-                raise AuthorizationError(msg='菜单已禁用，授权失败')
+                raise AuthorizationError(msg='Menu disabled,Authorization failure')
             if path_auth_perm not in user_menu_perms:
                 raise AuthorizationError
         else:
-            # casbin 权限校验
+            # casbin Permission verification
             user_forbid_menu_perms = await redis_client.get(
                 f'{settings.PERMISSION_REDIS_PREFIX}:{request.user.uuid}:disable'
             )
@@ -127,7 +127,7 @@ class RBAC:
                     f'{settings.PERMISSION_REDIS_PREFIX}:{user_uuid}:disable', ','.join(user_forbid_menu_perms)
                 )
             if path_auth_perm in user_forbid_menu_perms:
-                raise AuthorizationError(msg='菜单已禁用，授权失败')
+                raise AuthorizationError(msg='Menu disabled,Authorization failure')
             if (method, path) in settings.CASBIN_EXCLUDE:
                 return
             enforcer = await self.enforcer()
@@ -136,5 +136,5 @@ class RBAC:
 
 
 rbac = RBAC()
-# RBAC 授权依赖注入
+# RBAC Dependency Injection
 DependsRBAC = Depends(rbac.rbac_verify)

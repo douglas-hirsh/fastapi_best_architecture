@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     CELERY_REDIS_HOST: str
     CELERY_REDIS_PORT: int
     CELERY_REDIS_PASSWORD: str
-    CELERY_BROKER_REDIS_DATABASE: int  # 仅当使用 redis 作为 broker 时生效, 更适用于测试环境
+    CELERY_BROKER_REDIS_DATABASE: int  # only when used redis As/To/Being/As a broker Effective, More suitable for testing environment
     CELERY_BACKEND_REDIS_DATABASE: int
 
     # Env Rabbitmq
@@ -40,10 +40,10 @@ class Settings(BaseSettings):
     RABBITMQ_PASSWORD: str
 
     # Env Token
-    TOKEN_SECRET_KEY: str  # 密钥 secrets.token_urlsafe(32)
+    TOKEN_SECRET_KEY: str  # Key secrets.token_urlsafe(32)
 
     # Env Opera Log
-    OPERA_LOG_ENCRYPT_SECRET_KEY: str  # 密钥 os.urandom(32), 需使用 bytes.hex() 方法转换为 str
+    OPERA_LOG_ENCRYPT_SECRET_KEY: str  # Key os.urandom(32), Need to use bytes.hex() method to transform into str
 
     # FastAPI
     API_V1_STR: str = '/api/v1'
@@ -97,19 +97,19 @@ class Settings(BaseSettings):
     REDIS_TIMEOUT: int = 5
 
     # Token
-    TOKEN_ALGORITHM: str = 'HS256'  # 算法
-    TOKEN_EXPIRE_SECONDS: int = 60 * 60 * 24 * 1  # 过期时间，单位：秒
-    TOKEN_REFRESH_EXPIRE_SECONDS: int = 60 * 60 * 24 * 7  # 刷新过期时间，单位：秒
+    TOKEN_ALGORITHM: str = 'HS256'  # algorithm
+    TOKEN_EXPIRE_SECONDS: int = 60 * 60 * 24 * 1  # expiration time,unit: second
+    TOKEN_REFRESH_EXPIRE_SECONDS: int = 60 * 60 * 24 * 7  # Refreshexpiration time,unit: second
     TOKEN_URL_SWAGGER: str = f'{API_V1_STR}/auth/swagger_login'
     TOKEN_REDIS_PREFIX: str = 'fba_token'
     TOKEN_REFRESH_REDIS_PREFIX: str = 'fba_refresh_token'
-    TOKEN_EXCLUDE: list[str] = [  # JWT / RBAC 白名单
+    TOKEN_EXCLUDE: list[str] = [  # JWT / RBAC White list
         f'{API_V1_STR}/auth/login',
     ]
 
     # Captcha
     CAPTCHA_LOGIN_REDIS_PREFIX: str = 'fba_login_captcha'
-    CAPTCHA_LOGIN_EXPIRE_SECONDS: int = 60 * 5  # 过期时间，单位：秒
+    CAPTCHA_LOGIN_EXPIRE_SECONDS: int = 60 * 5  # expiration time,unit: second
 
     # Log
     LOG_STDOUT_FILENAME: str = 'fba_access.log'
@@ -147,7 +147,7 @@ class Settings(BaseSettings):
         OPENAPI_URL,
         f'{API_V1_STR}/auth/swagger_login',
     ]
-    OPERA_LOG_ENCRYPT: int = 1  # 0: AES (性能损耗); 1: md5; 2: ItsDangerous; 3: 不加密, others: 替换为 ******
+    OPERA_LOG_ENCRYPT: int = 1  # 0: AES (Performance degradation); 1: md5; 2: ItsDangerous; 3: Not encrypted., others: replace ******
     OPERA_LOG_ENCRYPT_INCLUDE: list[str] = [
         'password',
         'old_password',
@@ -157,7 +157,7 @@ class Settings(BaseSettings):
 
     # Ip location
     IP_LOCATION_REDIS_PREFIX: str = 'fba_ip_location'
-    IP_LOCATION_EXPIRE_SECONDS: int = 60 * 60 * 24 * 1  # 过期时间，单位：秒
+    IP_LOCATION_EXPIRE_SECONDS: int = 60 * 60 * 24 * 1  # expiration time,unit: second
 
     # Celery
     CELERY_BROKER: Literal['rabbitmq', 'redis'] = 'redis'
@@ -181,7 +181,7 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings():
-    """读取配置优化"""
+    """Read configuration optimization"""
     return Settings()
 
 

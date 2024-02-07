@@ -24,7 +24,7 @@ SchemaT = TypeVar('SchemaT')
 
 class _Params(BaseModel, AbstractParams):
     page: int = Query(1, ge=1, description='Page number')
-    size: int = Query(20, gt=0, le=100, description='Page size')  # 默认 20 条记录
+    size: int = Query(20, gt=0, le=100, description='Page size')  # Default 20 item
 
     def to_raw_params(self) -> RawParams:
         return RawParams(
@@ -34,14 +34,14 @@ class _Params(BaseModel, AbstractParams):
 
 
 class _Page(AbstractPage[T], Generic[T]):
-    items: Sequence[T]  # 数据
-    total: int  # 总数据数
-    page: int  # 第n页
-    size: int  # 每页数量
-    total_pages: int  # 总页数
-    links: Dict[str, str | None]  # 跳转链接
+    items: Sequence[T]  # Data
+    total: int  # OverallDataNumber
+    page: int  # Firstnpage
+    size: int  # eachpageNumber
+    total_pages: int  # OverallpageNumber
+    links: Dict[str, str | None]  # Jump link
 
-    __params_type__ = _Params  # 使用自定义的Params
+    __params_type__ = _Params  # use customParams
 
     @classmethod
     def create(
@@ -71,7 +71,7 @@ class _PageData(BaseModel, Generic[DataT]):
 
 async def paging_data(db: AsyncSession, select: Select, page_data_schema: SchemaT) -> dict:
     """
-    基于 SQLAlchemy 创建分页数据
+    Based on SQLAlchemy create separatepageData
 
     :param db:
     :param select:
@@ -83,5 +83,5 @@ async def paging_data(db: AsyncSession, select: Select, page_data_schema: Schema
     return page_data
 
 
-# 分页依赖注入
+# Separate/split/dividepageDependency injection
 DependsPagination = Depends(pagination_ctx(_Page))

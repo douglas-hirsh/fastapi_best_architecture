@@ -18,19 +18,19 @@ from backend.app.utils.timezone import timezone
 
 
 class OperaLogMiddleware(BaseHTTPMiddleware):
-    """操作日志中间件"""
+    """operation log middleware"""
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        # 排除记录白名单
+        # Exclude record whitelist
         path = request.url.path
         if path in settings.OPERA_LOG_EXCLUDE or not path.startswith(f'{settings.API_V1_STR}'):
             return await call_next(request)
 
-        # 请求解析
+        # Request parsing
         user_agent, device, os, browser = await parse_user_agent_info(request)
         ip, country, region, city = await parse_ip_info(request)
         try:
-            # 此信息依赖于 jwt 中间件
+            # This information relies on jwt middleware
             username = request.user.username
         except AttributeError:
             username = None
@@ -40,7 +40,7 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
         args = await self.get_request_args(request)
         args = await self.desensitization(args)
 
-        # 设置附加请求信息
+        # Setting additional request information
         request.state.ip = ip
         request.state.country = country
         request.state.region = region
@@ -50,13 +50,13 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
         request.state.browser = browser
         request.state.device = device
 
-        # 执行请求
+        # execute
         start_time = timezone.now()
         code, msg, status, err, response = await self.execute_request(request, call_next)
         end_time = timezone.now()
         cost_time = (end_time - start_time).total_seconds() * 1000.0
 
-        # 日志创建
+        # log creation
         opera_log_in = CreateOperaLogParam(
             username=username,
             method=method,
@@ -80,14 +80,14 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
         back = BackgroundTask(OperaLogService.create, obj_in=opera_log_in)
         await back()
 
-        # 错误抛出
+        # Error thrown
         if err:
             raise err from None
 
         return response
 
     async def execute_request(self, request: Request, call_next) -> tuple:
-        """执行请求"""
+        """execute"""
         err = None
         response = None
         try:
@@ -95,7 +95,7 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
             code, msg, status = await self.request_exception_handler(request)
         except Exception as e:
             log.exception(e)
-            # code 处理包含 SQLAlchemy 和 Pydantic
+            # code handle SQLAlchemy and Pydantic
             code = getattr(e, 'code', None) or 500
             msg = getattr(e, 'msg', None) or 'Internal Server Error'
             status = 0
@@ -106,7 +106,7 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
     @staticmethod
     @sync_to_async
     def request_exception_handler(request: Request) -> tuple:
-        """请求异常处理器"""
+        """RequestExceptionProcessor"""
         code = 200
         msg = 'Success'
         status = 1
@@ -130,10 +130,10 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
 
     @staticmethod
     async def get_request_args(request: Request) -> dict:
-        """获取请求参数"""
+        """Get request parameters"""
         args = dict(request.query_params)
         args.update(request.path_params)
-        # Tip: .body() 必须在 .form() 之前获取
+        # Tip: .body() must at .form() before getting
         # https://github.com/encode/starlette/discussions/1933
         body_data = await request.body()
         form_data = await request.form()
@@ -155,7 +155,7 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
     @sync_to_async
     def desensitization(args: dict) -> dict | None:
         """
-        脱敏处理
+        Desensitization treatment
 
         :param args:
         :return:

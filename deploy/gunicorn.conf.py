@@ -1,46 +1,46 @@
-# 监听内网端口
+# Listen to internal network ports
 bind = '0.0.0.0:8001'
 
-# 工作目录
+# Work directory
 chdir = '/fba/backend/app'
 
-# 并行工作进程数
+# Concurrency Level
 workers = 1
 
-# 指定每个工作者的线程数
+# Specify the number of threads for each worker.
 threads = 4
 
-# 监听队列
+# Monitor
 backlog = 512
 
-# 超时时间
+# Timeout
 timeout = 120
 
-# 设置守护进程,将进程交给 supervisor 管理；如果设置为 True 时，supervisor 启动日志为：
+# Set the guardian process.,Give the process to supervisor Management; If set to True time,supervisor Startup log is.: 
 # gave up: fastapi_server entered FATAL state, too many start retries too quickly
-# 则需要将此改为: False
+# then it needs to be changed to: False
 daemon = False
 
-# 工作模式协程
+# Work mode coroutine
 worker_class = 'uvicorn.workers.UvicornWorker'
 
-# 设置最大并发量
+# Set maximum concurrency.
 worker_connections = 2000
 
-# 设置进程文件目录
+# Set process file directory
 pidfile = '/fba/gunicorn.pid'
 
-# 设置访问日志和错误信息日志路径
+# Set access log and error log paths.
 accesslog = '/var/log/fastapi_server/gunicorn_access.log'
 errorlog = '/var/log/fastapi_server/gunicorn_error.log'
 
-# 设置这个值为true 才会把打印信息记录到错误日志里
+# Set this value totrue only
 capture_output = True
 
-# 设置日志记录水平
+# Set log recording level.
 loglevel = 'debug'
 
-# python程序
+# pythonProgram
 pythonpath = '/usr/local/lib/python3.10/site-packages'
 
-# 启动 gunicorn -c gunicorn.conf.py main:app
+# Start gunicorn -c gunicorn.conf.py main:app

@@ -1912,7 +1912,7 @@ files = [
 name = "xdbsearchip"
 version = "1.0.2"
 requires_python = ">=3.5"
-summary = "ip2region查询Python版，数据来源https://github.com/lionsoul2014/ip2region，代码来源https://github.com/luckydog6132，本作者仅做封装使用。"
+summary = "ip2regionQueryPythonversion,Data sourcehttps://github.com/lionsoul2014/ip2region,Source codehttps://github.com/luckydog6132. Only used for packaging by the author."
 groups = ["default"]
 files = [
     {file = "XdbSearchIP-1.0.2.tar.gz", hash = "sha256:fb0333d1746729f186474da4bfab1941ac0bc1ebc39bf7277da6b325e99e0765"},

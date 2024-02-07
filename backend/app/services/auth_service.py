@@ -28,16 +28,16 @@ class AuthService:
         async with async_db_session() as db:
             current_user = await user_dao.get_by_username(db, form_data.username)
             if not current_user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='User does not exist.')
             elif not await jwt.password_verify(form_data.password + current_user.salt, current_user.password):
-                raise errors.AuthorizationError(msg='密码错误')
+                raise errors.AuthorizationError(msg='Incorrect password.')
             elif not current_user.status:
-                raise errors.AuthorizationError(msg='用户已锁定, 登陆失败')
-            # 更新登陆时间
+                raise errors.AuthorizationError(msg='User has locked., Login failed')
+            # Update login time.
             await user_dao.update_login_time(db, form_data.username, self.login_time)
-            # 获取最新用户信息
+            # Get the latest user information.
             user = await user_dao.get(db, current_user.id)
-            # 创建token
+            # Createtoken
             access_token, _ = await jwt.create_access_token(str(user.id), multi_login=user.is_multi_login)
             return access_token, user
 
@@ -48,14 +48,14 @@ class AuthService:
             try:
                 current_user = await user_dao.get_by_username(db, obj.username)
                 if not current_user:
-                    raise errors.NotFoundError(msg='用户不存在')
+                    raise errors.NotFoundError(msg='User does not exist.')
                 elif not await jwt.password_verify(obj.password + current_user.salt, current_user.password):
-                    raise errors.AuthorizationError(msg='密码错误')
+                    raise errors.AuthorizationError(msg='Incorrect password.')
                 elif not current_user.status:
-                    raise errors.AuthorizationError(msg='用户已锁定, 登陆失败')
+                    raise errors.AuthorizationError(msg='User has locked., Login failed')
                 captcha_code = await redis_client.get(f'{settings.CAPTCHA_LOGIN_REDIS_PREFIX}:{request.state.ip}')
                 if not captcha_code:
-                    raise errors.AuthorizationError(msg='验证码失效，请重新获取')
+                    raise errors.AuthorizationError(msg='Verification code expires,Please reacquire.')
                 if captcha_code.lower() != obj.captcha.lower():
                     raise errors.CustomError(error=CustomErrorCode.CAPTCHA_ERROR)
                 await user_dao.update_login_time(db, obj.username, self.login_time)
@@ -88,7 +88,7 @@ class AuthService:
                     user=user,
                     login_time=self.login_time,
                     status=LoginLogStatusType.success.value,
-                    msg='登录成功',
+                    msg='Login successful',
                 )
                 background_tasks.add_task(LoginLogService.create, **log_info)
                 await redis_client.delete(f'{settings.CAPTCHA_LOGIN_REDIS_PREFIX}:{request.state.ip}')
@@ -98,13 +98,13 @@ class AuthService:
     async def new_token(*, request: Request, refresh_token: str) -> tuple[str, str, datetime, datetime]:
         user_id = await jwt.jwt_decode(refresh_token)
         if request.user.id != user_id:
-            raise errors.TokenError(msg='刷新 token 无效')
+            raise errors.TokenError(msg='Refresh token Invalid')
         async with async_db_session() as db:
             current_user = await user_dao.get(db, user_id)
             if not current_user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='User does not exist.')
             elif not current_user.status:
-                raise errors.AuthorizationError(msg='用户已锁定，操作失败')
+                raise errors.AuthorizationError(msg='User has locked.,Operation failed')
             current_token = await get_token(request)
             (
                 new_access_token,

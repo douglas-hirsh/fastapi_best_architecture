@@ -17,30 +17,30 @@ class RedisCli(Redis):
             password=settings.REDIS_PASSWORD,
             db=settings.REDIS_DATABASE,
             socket_timeout=settings.REDIS_TIMEOUT,
-            decode_responses=True,  # 转码 utf-8
+            decode_responses=True,  # Transcoding utf-8
         )
 
     async def open(self):
         """
-        触发初始化连接
+        Trigger initialization connection.
 
         :return:
         """
         try:
             await self.ping()
         except TimeoutError:
-            log.error('❌ 数据库 redis 连接超时')
+            log.error('❌ Database redis Connection timeout')
             sys.exit()
         except AuthenticationError:
-            log.error('❌ 数据库 redis 连接认证失败')
+            log.error('❌ Database redis Connection authentication failed')
             sys.exit()
         except Exception as e:
-            log.error('❌ 数据库 redis 连接异常 {}', e)
+            log.error('❌ Database redis Connection exception {}', e)
             sys.exit()
 
     async def delete_prefix(self, prefix: str, exclude: str | list = None):
         """
-        删除指定前缀的所有key
+        Delete all with specified prefixkey
 
         :param prefix:
         :param exclude:
@@ -60,5 +60,5 @@ class RedisCli(Redis):
             await self.delete(key)
 
 
-# 创建redis连接对象
+# CreateredisConnect object
 redis_client = RedisCli()

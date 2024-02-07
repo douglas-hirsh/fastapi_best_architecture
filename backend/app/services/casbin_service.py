@@ -43,7 +43,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         data = await enforcer.add_policy(p.sub, p.path, p.method)
         if not data:
-            raise errors.ForbiddenError(msg='权限已存在')
+            raise errors.ForbiddenError(msg='Authorization already exists')
         return data
 
     @staticmethod
@@ -51,7 +51,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         data = await enforcer.add_policies([list(p.model_dump().values()) for p in ps])
         if not data:
-            raise errors.ForbiddenError(msg='权限已存在')
+            raise errors.ForbiddenError(msg='Authorization already exists')
         return data
 
     @staticmethod
@@ -59,7 +59,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         _p = enforcer.has_policy(old.sub, old.path, old.method)
         if not _p:
-            raise errors.NotFoundError(msg='权限不存在')
+            raise errors.NotFoundError(msg='Permission does not exist.')
         data = await enforcer.update_policy([old.sub, old.path, old.method], [new.sub, new.path, new.method])
         return data
 
@@ -76,7 +76,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         _p = enforcer.has_policy(p.sub, p.path, p.method)
         if not _p:
-            raise errors.NotFoundError(msg='权限不存在')
+            raise errors.NotFoundError(msg='Permission does not exist.')
         data = await enforcer.remove_policy(p.sub, p.path, p.method)
         return data
 
@@ -85,7 +85,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         data = await enforcer.remove_policies([list(p.model_dump().values()) for p in ps])
         if not data:
-            raise errors.NotFoundError(msg='权限不存在')
+            raise errors.NotFoundError(msg='Permission does not exist.')
         return data
 
     @staticmethod
@@ -105,7 +105,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         data = await enforcer.add_grouping_policy(g.uuid, g.role)
         if not data:
-            raise errors.ForbiddenError(msg='权限已存在')
+            raise errors.ForbiddenError(msg='Authorization already exists')
         return data
 
     @staticmethod
@@ -113,7 +113,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         data = await enforcer.add_grouping_policies([list(g.model_dump().values()) for g in gs])
         if not data:
-            raise errors.ForbiddenError(msg='权限已存在')
+            raise errors.ForbiddenError(msg='Authorization already exists')
         return data
 
     @staticmethod
@@ -121,7 +121,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         _g = enforcer.has_grouping_policy(g.uuid, g.role)
         if not _g:
-            raise errors.NotFoundError(msg='权限不存在')
+            raise errors.NotFoundError(msg='Permission does not exist.')
         data = await enforcer.remove_grouping_policy(g.uuid, g.role)
         return data
 
@@ -130,7 +130,7 @@ class CasbinService:
         enforcer = await rbac.enforcer()
         data = await enforcer.remove_grouping_policies([list(g.model_dump().values()) for g in gs])
         if not data:
-            raise errors.NotFoundError(msg='权限不存在')
+            raise errors.NotFoundError(msg='Permission does not exist.')
         return data
 
     @staticmethod

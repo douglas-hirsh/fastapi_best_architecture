@@ -9,7 +9,7 @@ __all__ = ['celery_app']
 
 def make_celery(main_name: str) -> Celery:
     """
-    创建 celery 应用
+    Create celery Application
 
     :param main_name: __main__ module name
     :return:

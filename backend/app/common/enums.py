@@ -16,19 +16,19 @@ class _EnumBase:
 
 
 class IntEnum(_EnumBase, SourceIntEnum):
-    """整型枚举"""
+    """integer enumeration"""
 
     pass
 
 
 class StrEnum(_EnumBase, str, Enum):
-    """字符串枚举"""
+    """String enumeration"""
 
     pass
 
 
 class MenuType(IntEnum):
-    """菜单类型"""
+    """Menu type"""
 
     directory = 0
     menu = 1
@@ -36,14 +36,14 @@ class MenuType(IntEnum):
 
 
 class RoleDataScopeType(IntEnum):
-    """数据范围"""
+    """data range"""
 
     all = 1
     custom = 2
 
 
 class MethodType(StrEnum):
-    """请求方法"""
+    """Request method"""
 
     GET = 'GET'
     POST = 'POST'
@@ -54,21 +54,21 @@ class MethodType(StrEnum):
 
 
 class LoginLogStatusType(IntEnum):
-    """登陆日志状态"""
+    """Login log status"""
 
     fail = 0
     success = 1
 
 
 class BuildTreeType(StrEnum):
-    """构建树形结构类型"""
+    """Build tree-like structure type"""
 
     traversal = 'traversal'
     recursive = 'recursive'
 
 
 class OperaLogCipherType(IntEnum):
-    """操作日志加密类型"""
+    """Operation log encryption type"""
 
     aes = 0
     md5 = 1
@@ -77,7 +77,7 @@ class OperaLogCipherType(IntEnum):
 
 
 class StatusType(IntEnum):
-    """状态类型"""
+    """Status type"""
 
     disable = 0
     enable = 1

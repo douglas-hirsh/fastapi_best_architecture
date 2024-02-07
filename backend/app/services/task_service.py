@@ -13,7 +13,7 @@ class TaskService:
         try:
             result = celery_app.AsyncResult(pk)
         except (BackendGetMetaError, NotRegistered):
-            raise NotFoundError(msg='任务不存在')
+            raise NotFoundError(msg='task does not exist')
         if result.failed():
             return None
         return result

@@ -18,8 +18,8 @@ router = APIRouter()
 
 @router.post(
     '/swagger_login',
-    summary='swagger 表单登录',
-    description='form 格式登录，用于 swagger 文档调试以及获取 JWT Auth',
+    summary='swagger Form login',
+    description='form Format login,for, used for swagger Document debugging and acquisition JWT Auth',
     deprecated=True,
 )
 async def swagger_user_login(form_data: OAuth2PasswordRequestForm = Depends()) -> GetSwaggerToken:
@@ -29,8 +29,8 @@ async def swagger_user_login(form_data: OAuth2PasswordRequestForm = Depends()) -
 
 @router.post(
     '/login',
-    summary='用户登录',
-    description='json 格式登录, 仅支持在第三方api工具调试, 例如: postman',
+    summary='User login',
+    description='json Format login, only support in third-partyapiTool debugging, For example: postman',
     dependencies=[Depends(RateLimiter(times=5, minutes=1))],
 )
 async def user_login(request: Request, obj: AuthLoginParam, background_tasks: BackgroundTasks) -> ResponseModel:
@@ -47,7 +47,7 @@ async def user_login(request: Request, obj: AuthLoginParam, background_tasks: Ba
     return await response_base.success(data=data)
 
 
-@router.post('/new_token', summary='创建新 token', dependencies=[DependsJwtAuth])
+@router.post('/new_token', summary='Create new token', dependencies=[DependsJwtAuth])
 async def create_new_token(request: Request, refresh_token: Annotated[str, Query(...)]) -> ResponseModel:
     (
         new_access_token,
@@ -64,7 +64,7 @@ async def create_new_token(request: Request, refresh_token: Annotated[str, Query
     return await response_base.success(data=data)
 
 
-@router.post('/logout', summary='用户登出', dependencies=[DependsJwtAuth])
+@router.post('/logout', summary='User logout', dependencies=[DependsJwtAuth])
 async def user_logout(request: Request) -> ResponseModel:
     await auth_service.logout(request=request)
     return await response_base.success()

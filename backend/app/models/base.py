@@ -7,36 +7,36 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, MappedAsDataclass, declared_
 
 from backend.app.utils.timezone import timezone
 
-# 通用 Mapped 类型主键, 需手动添加，参考以下使用方式
+# Universal Mapped Primary key., Need manual addition.,Reference the following usage methods.
 # MappedBase -> id: Mapped[id_key]
 # DataClassBase && Base -> id: Mapped[id_key] = mapped_column(init=False)
 id_key = Annotated[
-    int, mapped_column(primary_key=True, index=True, autoincrement=True, sort_order=-999, comment='主键id')
+    int, mapped_column(primary_key=True, index=True, autoincrement=True, sort_order=-999, comment='primary keyid')
 ]
 
 
-# Mixin: 一种面向对象编程概念, 使结构变得更加清晰, `Wiki <https://en.wikipedia.org/wiki/Mixin/>`__
+# Mixin: Object-oriented programming concept, Make the structure clearer., `Wiki <https://en.wikipedia.org/wiki/Mixin/>`__
 class UserMixin(MappedAsDataclass):
-    """用户 Mixin 数据类"""
+    """user Mixin Data"""
 
-    create_user: Mapped[int] = mapped_column(sort_order=998, comment='创建者')
-    update_user: Mapped[int | None] = mapped_column(init=False, default=None, sort_order=998, comment='修改者')
+    create_user: Mapped[int] = mapped_column(sort_order=998, comment='creator')
+    update_user: Mapped[int | None] = mapped_column(init=False, default=None, sort_order=998, comment='Modifier')
 
 
 class DateTimeMixin(MappedAsDataclass):
-    """日期时间 Mixin 数据类"""
+    """Date and time Mixin Data"""
 
     created_time: Mapped[datetime] = mapped_column(
-        init=False, default_factory=timezone.now, sort_order=999, comment='创建时间'
+        init=False, default_factory=timezone.now, sort_order=999, comment='Creation time'
     )
     updated_time: Mapped[datetime | None] = mapped_column(
-        init=False, onupdate=timezone.now, sort_order=999, comment='更新时间'
+        init=False, onupdate=timezone.now, sort_order=999, comment='Update time'
     )
 
 
 class MappedBase(DeclarativeBase):
     """
-    声明性基类, 原始 DeclarativeBase 类, 作为所有基类或数据模型类的父类而存在
+    declarative base class, original DeclarativeBase type, As all basestypeortypeFather'stypeexist
 
     `DeclarativeBase <https://docs.sqlalchemy.org/en/20/orm/declarative_config.html>`__
     `mapped_column() <https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.mapped_column>`__
@@ -49,7 +49,7 @@ class MappedBase(DeclarativeBase):
 
 class DataClassBase(MappedAsDataclass, MappedBase):
     """
-    声明性数据类基类, 它将带有数据类集成, 允许使用更高级配置, 但你必须注意它的一些特性, 尤其是和 DeclarativeBase 一起使用时
+    declarativeDatabasetype, it will haveDataintegrated, permit, But you must pay attention to some of its characteristics., especially DeclarativeBase Together when using.
 
     `MappedAsDataclass <https://docs.sqlalchemy.org/en/20/orm/dataclasses.html#orm-declarative-native-dataclasses>`__
     """  # noqa: E501
@@ -59,7 +59,7 @@ class DataClassBase(MappedAsDataclass, MappedBase):
 
 class Base(DataClassBase, DateTimeMixin):
     """
-    声明性 Mixin 数据类基类, 带有数据类集成, 并包含 MiXin 数据类基础表结构, 你可以简单的理解它为含有基础表结构的数据类基类
+    declarative Mixin Databasetype, WithDataintegrated, And include. MiXin Database, Basic table structure
     """  # noqa: E501
 
     __abstract__ = True

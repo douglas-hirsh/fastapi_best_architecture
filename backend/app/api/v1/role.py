@@ -18,27 +18,27 @@ from backend.app.utils.serializers import select_as_dict, select_list_serialize
 router = APIRouter()
 
 
-@router.get('/all', summary='获取所有角色', dependencies=[DependsJwtAuth])
+@router.get('/all', summary='Get all characters.', dependencies=[DependsJwtAuth])
 async def get_all_roles() -> ResponseModel:
     roles = await role_service.get_all()
     data = await select_list_serialize(roles)
     return await response_base.success(data=data)
 
 
-@router.get('/{pk}/all', summary='获取用户所有角色', dependencies=[DependsJwtAuth])
+@router.get('/{pk}/all', summary='Obtain all user roles.', dependencies=[DependsJwtAuth])
 async def get_user_all_roles(pk: Annotated[int, Path(...)]) -> ResponseModel:
     roles = await role_service.get_user_roles(pk=pk)
     data = await select_list_serialize(roles)
     return await response_base.success(data=data)
 
 
-@router.get('/{pk}/menus', summary='获取角色所有菜单', dependencies=[DependsJwtAuth])
+@router.get('/{pk}/menus', summary='Get all menus for a character.', dependencies=[DependsJwtAuth])
 async def get_role_all_menus(pk: Annotated[int, Path(...)]) -> ResponseModel:
     menu = await menu_service.get_role_menu_tree(pk=pk)
     return await response_base.success(data=menu)
 
 
-@router.get('/{pk}', summary='获取角色详情', dependencies=[DependsJwtAuth])
+@router.get('/{pk}', summary='Get character details', dependencies=[DependsJwtAuth])
 async def get_role(pk: Annotated[int, Path(...)]) -> ResponseModel:
     role = await role_service.get(pk=pk)
     data = GetRoleListDetails(**await select_as_dict(role))
@@ -47,7 +47,7 @@ async def get_role(pk: Annotated[int, Path(...)]) -> ResponseModel:
 
 @router.get(
     '',
-    summary='（模糊条件）分页获取所有角色',
+    summary='(Fuzzy condition) paginationGet all characters.',
     dependencies=[
         DependsJwtAuth,
         DependsPagination,
@@ -66,7 +66,7 @@ async def get_pagination_roles(
 
 @router.post(
     '',
-    summary='创建角色',
+    summary='Create',
     dependencies=[
         Depends(RequestPermission('sys:role:add')),
         DependsRBAC,
@@ -79,7 +79,7 @@ async def create_role(obj: CreateRoleParam) -> ResponseModel:
 
 @router.put(
     '/{pk}',
-    summary='更新角色',
+    summary='Update character',
     dependencies=[
         Depends(RequestPermission('sys:role:edit')),
         DependsRBAC,
@@ -94,7 +94,7 @@ async def update_role(pk: Annotated[int, Path(...)], obj: UpdateRoleParam) -> Re
 
 @router.put(
     '/{pk}/menu',
-    summary='更新角色菜单',
+    summary='Update characterMenu',
     dependencies=[
         Depends(RequestPermission('sys:role:menu:edit')),
         DependsRBAC,
@@ -111,7 +111,7 @@ async def update_role_menus(
 
 @router.delete(
     '',
-    summary='（批量）删除角色',
+    summary='(batch) Delete character.',
     dependencies=[
         Depends(RequestPermission('sys:role:del')),
         DependsRBAC,

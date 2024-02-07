@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-# 导入所有模型，并将 Base 放在最前面， 以便 Base 拥有它们
+# Import all models,and Base Put it in front., So that Base Have them.
 # imported by Alembic
 """
 from backend.app.models.base import MappedBase

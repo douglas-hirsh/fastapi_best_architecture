@@ -15,7 +15,7 @@ from backend.app.utils.serializers import MsgSpecJSONResponse
 
 
 class _AuthenticationError(AuthenticationError):
-    """重写内部认证错误类"""
+    """RewriteInternalAuthenticationErrorClass"""
 
     def __init__(self, *, code: int = None, msg: str = None, headers: dict[str, Any] | None = None):
         self.code = code
@@ -24,11 +24,11 @@ class _AuthenticationError(AuthenticationError):
 
 
 class JwtAuthMiddleware(AuthenticationBackend):
-    """JWT 认证中间件"""
+    """JWT Authentication Middleware"""
 
     @staticmethod
     def auth_exception_handler(conn: HTTPConnection, exc: _AuthenticationError) -> Response:
-        """覆盖内部认证错误处理"""
+        """Coverage of internal authentication error handling"""
         return MsgSpecJSONResponse(content={'code': exc.code, 'msg': exc.msg, 'data': None}, status_code=exc.code)
 
     async def authenticate(self, request: Request):
@@ -53,6 +53,6 @@ class JwtAuthMiddleware(AuthenticationBackend):
             log.exception(e)
             raise _AuthenticationError(code=getattr(e, 'code', 500), msg=getattr(e, 'msg', 'Internal Server Error'))
 
-        # 请注意，此返回使用非标准模式，所以在认证通过时，将丢失某些标准特性
-        # 标准返回模式请查看：https://www.starlette.io/authentication/
+        # Please note.,This return uses non-standard mode.,Therefore, when certification is approved.,Will lose certain standard features
+        # Standard return mode, please refer to.: https://www.starlette.io/authentication/
         return AuthCredentials(['authenticated']), user

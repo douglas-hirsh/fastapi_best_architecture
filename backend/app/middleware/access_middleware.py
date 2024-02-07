@@ -8,7 +8,7 @@ from backend.app.utils.timezone import timezone
 
 
 class AccessMiddleware(BaseHTTPMiddleware):
-    """记录请求日志中间件"""
+    """record"""
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         start_time = timezone.now()

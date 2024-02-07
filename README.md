@@ -13,7 +13,7 @@
 
 Pydantic-V2 Completed 🎉
 
-English | [简体中文](./README.zh-CN.md)
+English | [Simplified Chinese](./README.zh-CN.md)
 
 FastAPI framework based on the front-end and back-end separation of the middle and back-end solutions, follow
 the [pseudo three-tier architecture](#pseudo-three-tier-architecture) design, support for **python3.10** and above
@@ -141,9 +141,9 @@ Go to [fastapi_best_architecture_ui](https://github.com/fastapi-practices/fastap
 ### Docker deploy
 
 > [!WARNING]
-> Default port conflict：8000，3306，6379，5672
+> Default port conflict: 8000,3306,6379,5672
 >
-> As a best practice, shut down on-premises services before deployment：mysql，redis，rabbitmq...
+> As a best practice, shut down on-premises services before deployment: mysql,redis,rabbitmq...
 
 1. Go to the directory where the ``docker-compose.yml`` file is located and create the environment variable
    file ``.env``

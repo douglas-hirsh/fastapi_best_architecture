@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-全局业务异常类
+Global business exception class
 
-业务代码执行异常时，可以使用 raise xxxError 触发内部错误，它尽可能实现带有后台任务的异常，但它不适用于**自定义响应状态码**
-如果要求使用**自定义响应状态码**，则可以通过 return await response_base.fail(res=CustomResponseCode.xxx) 直接返回
+When the business code execution is abnormal.,can use raise xxxError Internal error triggered.,It strives to achieve exceptions with background tasks as much as possible.,But it does not apply to**Custom response status code**
+If requested to use**Custom response status code**,then can be achieved through return await response_base.fail(res=CustomResponseCode.xxx) Direct return
 """  # noqa: E501
 from typing import Any
 

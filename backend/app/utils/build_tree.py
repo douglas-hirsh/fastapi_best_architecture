@@ -9,7 +9,7 @@ from backend.app.utils.serializers import RowData, select_list_serialize
 
 
 async def get_tree_nodes(row: Sequence[RowData]) -> list[dict[str, Any]]:
-    """获取所有树形结构节点"""
+    """Obtain all tree structure nodes."""
     tree_nodes = await select_list_serialize(row)
     tree_nodes.sort(key=lambda x: x['sort'])
     return tree_nodes
@@ -18,7 +18,7 @@ async def get_tree_nodes(row: Sequence[RowData]) -> list[dict[str, Any]]:
 @sync_to_async
 def traversal_to_tree(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """
-    通过遍历算法构造树形结构
+    Construct tree structure through traversal algorithm.
 
     :param nodes:
     :return:
@@ -42,7 +42,7 @@ def traversal_to_tree(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 async def recursive_to_tree(nodes: list[dict[str, Any]], *, parent_id: int | None = None) -> list[dict[str, Any]]:
     """
-    通过递归算法构造树形结构
+    Construct tree structures through recursive algorithms.
 
     :param nodes:
     :param parent_id:
@@ -62,7 +62,7 @@ async def get_tree_data(
     row: Sequence[RowData], build_type: BuildTreeType = BuildTreeType.traversal, *, parent_id: int | None = None
 ) -> list[dict[str, Any]]:
     """
-    获取树形结构数据
+    Get tree structure data.
 
     :param row:
     :param build_type:
@@ -76,5 +76,5 @@ async def get_tree_data(
         case BuildTreeType.recursive:
             tree = await recursive_to_tree(nodes, parent_id=parent_id)
         case _:
-            raise ValueError(f'无效的算法类型：{build_type}')
+            raise ValueError(f'Invalid algorithm type: {build_type}')
     return tree

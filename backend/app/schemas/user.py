@@ -48,7 +48,7 @@ class UpdateUserRoleParam(SchemaBase):
 
 
 class AvatarParam(SchemaBase):
-    url: HttpUrl = Field(..., description='头像 http 地址')
+    url: HttpUrl = Field(..., description='Profile picture http Address')
 
 
 class GetUserInfoNoRelationDetail(UserInfoSchemaBase):
@@ -81,7 +81,7 @@ class GetCurrentUserInfoDetail(GetUserInfoListDetails):
 
     @model_validator(mode='after')
     def handel(self, values):
-        """处理部门和角色"""
+        """Department and role"""
         dept = self.dept
         if dept:
             self.dept = dept.name  # type: ignore

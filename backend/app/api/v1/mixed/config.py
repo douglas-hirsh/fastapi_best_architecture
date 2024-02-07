@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get(
     '/routes',
-    summary='获取所有路由',
+    summary='Obtain all routes',
     dependencies=[
         Depends(RequestPermission('sys:route:list')),
         DependsRBAC,

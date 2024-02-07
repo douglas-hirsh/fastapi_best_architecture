@@ -15,7 +15,7 @@ __all__ = ['ResponseModel', 'response_base']
 
 class ResponseModel(BaseModel):
     """
-    统一返回模型
+    Unified Return Model
 
     E.g. ::
 
@@ -33,7 +33,7 @@ class ResponseModel(BaseModel):
             return ResponseModel(code=res.code, msg=res.msg, data={'test': 'test'})
     """
 
-    # TODO: json_encoders 配置失效: https://github.com/tiangolo/fastapi/discussions/10252
+    # TODO: json_encoders Configuration failure: https://github.com/tiangolo/fastapi/discussions/10252
     model_config = ConfigDict(json_encoders={datetime: lambda x: x.strftime(settings.DATETIME_FORMAT)})
 
     code: int = CustomResponseCode.HTTP_200.code
@@ -43,11 +43,11 @@ class ResponseModel(BaseModel):
 
 class ResponseBase:
     """
-    统一返回方法
+    Unified return method
 
     .. tip::
 
-        此类中的方法将返回 ResponseModel 模型，作为一种编码风格而存在；
+        The method in this class will return." ResponseModel Model,exist as a coding style; 
 
     E.g. ::
 
@@ -59,10 +59,10 @@ class ResponseBase:
     @staticmethod
     async def __response(*, res: CustomResponseCode | CustomResponse = None, data: Any | None = None) -> ResponseModel:
         """
-        请求成功返回通用方法
+        Request successful return general method
 
-        :param res: 返回信息
-        :param data: 返回数据
+        :param res: Return information
+        :param data: Return data
         :return:
         """
         return ResponseModel(code=res.code, msg=res.msg, data=data)

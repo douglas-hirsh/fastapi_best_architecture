@@ -23,11 +23,11 @@ class Logger:
         if not os.path.exists(self.log_path):
             os.mkdir(self.log_path)
 
-        # 日志文件
+        # log file
         log_stdout_file = os.path.join(self.log_path, settings.LOG_STDOUT_FILENAME)
         log_stderr_file = os.path.join(self.log_path, settings.LOG_STDERR_FILENAME)
 
-        # loguru 日志: https://loguru.readthedocs.io/en/stable/api/logger.html#loguru._logger.Logger.add
+        # loguru Log: https://loguru.readthedocs.io/en/stable/api/logger.html#loguru._logger.Logger.add
         log_config = dict(rotation='10 MB', retention='15 days', compression='tar.gz', enqueue=True)
         # stdout
         logger.add(

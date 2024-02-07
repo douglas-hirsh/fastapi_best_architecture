@@ -10,13 +10,13 @@ from backend.app.tasks import task_demo_async
 router = APIRouter(prefix='/tests')
 
 
-@router.post('/send', summary='异步任务演示')
+@router.post('/send', summary='Async Task Demo')
 async def send_task() -> ResponseModel:
     result = task_demo_async.delay()
     return await response_base.success(data=result.id)
 
 
-@router.post('/files', summary='上传文件演示')
+@router.post('/files', summary='Upload file demonstration')
 async def create_file(
     file: Annotated[bytes, File()],
     fileb: Annotated[UploadFile, File()],

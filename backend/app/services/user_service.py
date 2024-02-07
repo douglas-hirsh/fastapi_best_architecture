@@ -30,14 +30,14 @@ class UserService:
         async with async_db_session.begin() as db:
             username = await user_dao.get_by_username(db, obj.username)
             if username:
-                raise errors.ForbiddenError(msg='该用户名已注册')
-            obj.nickname = obj.nickname if obj.nickname else f'用户{random.randrange(10000, 99999)}'
+                raise errors.ForbiddenError(msg='The username has already been registered.')
+            obj.nickname = obj.nickname if obj.nickname else f'user{random.randrange(10000, 99999)}'
             nickname = await user_dao.get_by_nickname(db, obj.nickname)
             if nickname:
-                raise errors.ForbiddenError(msg='昵称已注册')
+                raise errors.ForbiddenError(msg='Nickname registered')
             email = await user_dao.check_email(db, obj.email)
             if email:
-                raise errors.ForbiddenError(msg='该邮箱已注册')
+                raise errors.ForbiddenError(msg='The email has been registered.')
             await user_dao.create(db, obj)
 
     @staticmethod
@@ -46,21 +46,21 @@ class UserService:
             await superuser_verify(request)
             username = await user_dao.get_by_username(db, obj.username)
             if username:
-                raise errors.ForbiddenError(msg='此用户名已注册')
-            obj.nickname = obj.nickname if obj.nickname else f'用户{random.randrange(10000, 99999)}'
+                raise errors.ForbiddenError(msg='ThisuserName already registered')
+            obj.nickname = obj.nickname if obj.nickname else f'user{random.randrange(10000, 99999)}'
             nickname = await user_dao.get_by_nickname(db, obj.nickname)
             if nickname:
-                raise errors.ForbiddenError(msg='昵称已注册')
+                raise errors.ForbiddenError(msg='Nickname registered')
             dept = await dept_dao.get(db, obj.dept_id)
             if not dept:
-                raise errors.NotFoundError(msg='部门不存在')
+                raise errors.NotFoundError(msg='Department does not exist')
             for role_id in obj.roles:
                 role = await role_dao.get(db, role_id)
                 if not role:
-                    raise errors.NotFoundError(msg='角色不存在')
+                    raise errors.NotFoundError(msg='Role does not exist.')
             email = await user_dao.check_email(db, obj.email)
             if email:
-                raise errors.ForbiddenError(msg='该邮箱已注册')
+                raise errors.ForbiddenError(msg='The email has been registered.')
             await user_dao.add(db, obj)
 
     @staticmethod
@@ -68,11 +68,11 @@ class UserService:
         async with async_db_session.begin() as db:
             op = obj.old_password
             if not await password_verify(op + request.user.salt, request.user.password):
-                raise errors.ForbiddenError(msg='旧密码错误')
+                raise errors.ForbiddenError(msg='Incorrect old password.')
             np1 = obj.new_password
             np2 = obj.confirm_password
             if np1 != np2:
-                raise errors.ForbiddenError(msg='两次密码输入不一致')
+                raise errors.ForbiddenError(msg='Passwords entered twice do not match.')
             count = await user_dao.reset_password(db, request.user.id, obj.new_password, request.user.salt)
             prefix = [
                 f'{settings.TOKEN_REDIS_PREFIX}:{request.user.id}:',
@@ -87,7 +87,7 @@ class UserService:
         async with async_db_session() as db:
             user = await user_dao.get_with_relation(db, username=username)
             if not user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             return user
 
     @staticmethod
@@ -95,22 +95,22 @@ class UserService:
         async with async_db_session.begin() as db:
             if not request.user.is_superuser:
                 if request.user.username != username:
-                    raise errors.ForbiddenError(msg='你只能修改自己的信息')
+                    raise errors.ForbiddenError(msg='You can only modify your own information.')
             input_user = await user_dao.get_with_relation(db, username=username)
             if not input_user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             if input_user.username != obj.username:
                 _username = await user_dao.get_by_username(db, obj.username)
                 if _username:
-                    raise errors.ForbiddenError(msg='该用户名已存在')
+                    raise errors.ForbiddenError(msg='TheuserName already exists')
             if input_user.nickname != obj.nickname:
                 nickname = await user_dao.get_by_nickname(db, obj.nickname)
                 if nickname:
-                    raise errors.ForbiddenError(msg='改昵称已存在')
+                    raise errors.ForbiddenError(msg='Nickname already exists')
             if input_user.email != obj.email:
                 email = await user_dao.check_email(db, obj.email)
                 if email:
-                    raise errors.ForbiddenError(msg='该邮箱已注册')
+                    raise errors.ForbiddenError(msg='The email has been registered.')
             count = await user_dao.update_userinfo(db, input_user, obj)
             return count
 
@@ -119,14 +119,14 @@ class UserService:
         async with async_db_session.begin() as db:
             if not request.user.is_superuser:
                 if request.user.username != username:
-                    raise errors.ForbiddenError(msg='你只能修改自己的角色')
+                    raise errors.ForbiddenError(msg='You can only modify your own role.')
             input_user = await user_dao.get_with_relation(db, username=username)
             if not input_user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             for role_id in obj.roles:
                 role = await role_dao.get(db, role_id)
                 if not role:
-                    raise errors.NotFoundError(msg='角色不存在')
+                    raise errors.NotFoundError(msg='Role does not exist.')
             await user_dao.update_role(db, input_user, obj)
             await redis_client.delete_prefix(f'{settings.PERMISSION_REDIS_PREFIX}:{request.user.uuid}')
 
@@ -135,10 +135,10 @@ class UserService:
         async with async_db_session.begin() as db:
             if not request.user.is_superuser:
                 if request.user.username != username:
-                    raise errors.ForbiddenError(msg='你只能修改自己的头像')
+                    raise errors.ForbiddenError(msg='You can only edit your own profile picture.')
             input_user = await user_dao.get_by_username(db, username)
             if not input_user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             count = await user_dao.update_avatar(db, input_user, avatar)
             return count
 
@@ -151,10 +151,10 @@ class UserService:
         async with async_db_session.begin() as db:
             await superuser_verify(request)
             if not await user_dao.get(db, pk):
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             else:
                 if pk == request.user.id:
-                    raise errors.ForbiddenError(msg='禁止修改自身管理员权限')
+                    raise errors.ForbiddenError(msg='Prohibit modifying own administrator privileges.')
                 count = await user_dao.set_super(db, pk)
                 return count
 
@@ -163,10 +163,10 @@ class UserService:
         async with async_db_session.begin() as db:
             await superuser_verify(request)
             if not await user_dao.get(db, pk):
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             else:
                 if pk == request.user.id:
-                    raise errors.ForbiddenError(msg='禁止修改自身后台管理登陆权限')
+                    raise errors.ForbiddenError(msg='Prohibit modifying self-backend management login permissions.')
                 count = await user_dao.set_staff(db, pk)
                 return count
 
@@ -175,10 +175,10 @@ class UserService:
         async with async_db_session.begin() as db:
             await superuser_verify(request)
             if not await user_dao.get(db, pk):
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             else:
                 if pk == request.user.id:
-                    raise errors.ForbiddenError(msg='禁止修改自身状态')
+                    raise errors.ForbiddenError(msg='Prohibited modifying own state')
                 count = await user_dao.set_status(db, pk)
                 return count
 
@@ -187,19 +187,19 @@ class UserService:
         async with async_db_session.begin() as db:
             await superuser_verify(request)
             if not await user_dao.get(db, pk):
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             else:
                 count = await user_dao.set_multi_login(db, pk)
                 token = await get_token(request)
                 user_id = request.user.id
                 latest_multi_login = await user_dao.get_multi_login(db, pk)
-                # TODO: 删除用户 refresh token, 此操作需要传参，暂时不考虑实现
-                # 当前用户修改自身时（普通/超级），除当前token外，其他token失效
+                # TODO: Removeuser refresh token, This operation requires passing arguments.,Not considering implementation for now.
+                # currentusermodify oneself(ordinary/super) ,Except the currenttokenOutside,othertokenFailure
                 if pk == user_id:
                     if not latest_multi_login:
                         prefix = f'{settings.TOKEN_REDIS_PREFIX}:{pk}:'
                         await redis_client.delete_prefix(prefix, exclude=prefix + token)
-                # 超级用户修改他人时，他人token将全部失效
+                # superusermodifyOtherstime,Otherstokenwill (all)Failure
                 else:
                     if not latest_multi_login:
                         prefix = f'{settings.TOKEN_REDIS_PREFIX}:{pk}:'
@@ -211,7 +211,7 @@ class UserService:
         async with async_db_session.begin() as db:
             input_user = await user_dao.get_by_username(db, username)
             if not input_user:
-                raise errors.NotFoundError(msg='用户不存在')
+                raise errors.NotFoundError(msg='userdo not exist')
             count = await user_dao.delete(db, input_user.id)
             prefix = [
                 f'{settings.TOKEN_REDIS_PREFIX}:{input_user.id}:',

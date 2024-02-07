@@ -8,15 +8,15 @@ from backend.app.models.base import MappedBase, id_key
 
 
 class CasbinRule(MappedBase):
-    """重写 casbin 中的 CasbinRule model 类, 使用自定义 Base, 避免产生 alembic 迁移问题"""
+    """rewrite casbin in CasbinRule model type, Use custom. Base, avoid alembic Migration problem"""
 
     __tablename__ = 'sys_casbin_rule'
 
     id: Mapped[id_key]
-    ptype: Mapped[str] = mapped_column(String(255), comment='策略类型: p / g')
-    v0: Mapped[str] = mapped_column(String(255), comment='角色ID / 用户uuid')
-    v1: Mapped[str] = mapped_column(LONGTEXT, comment='api路径 / 角色名称')
-    v2: Mapped[str | None] = mapped_column(String(255), comment='请求方法')
+    ptype: Mapped[str] = mapped_column(String(255), comment='Strategytypetype: p / g')
+    v0: Mapped[str] = mapped_column(String(255), comment='RoleID / useruuid')
+    v1: Mapped[str] = mapped_column(LONGTEXT, comment='apiPath / RoleName')
+    v2: Mapped[str | None] = mapped_column(String(255), comment='Request method')
     v3: Mapped[str | None] = mapped_column(String(255))
     v4: Mapped[str | None] = mapped_column(String(255))
     v5: Mapped[str | None] = mapped_column(String(255))

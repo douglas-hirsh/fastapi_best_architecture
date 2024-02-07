@@ -15,7 +15,7 @@ from backend.app.core.path_conf import IP2REGION_XDB
 
 @sync_to_async
 def get_request_ip(request: Request) -> str:
-    """获取请求的 ip 地址"""
+    """Get request ip Address"""
     real = request.headers.get('X-Real-IP')
     if real:
         ip = real
@@ -25,7 +25,7 @@ def get_request_ip(request: Request) -> str:
             ip = forwarded.split(',')[0]
         else:
             ip = request.client.host
-    # 忽略 pytest
+    # ignore pytest
     if ip == 'testclient':
         ip = '127.0.0.1'
     return ip
@@ -33,7 +33,7 @@ def get_request_ip(request: Request) -> str:
 
 async def get_location_online(ip: str, user_agent: str) -> dict | None:
     """
-    在线获取 ip 地址属地，无法保证可用性，准确率较高
+    Online acquisition ip AddressTerritory,Unable to guarantee availability.,Accuracy is higher.
 
     :param ip:
     :param user_agent:
@@ -47,14 +47,14 @@ async def get_location_online(ip: str, user_agent: str) -> dict | None:
             if response.status_code == 200:
                 return response.json()
         except Exception as e:
-            log.error(f'在线获取 ip 地址属地失败，错误信息：{e}')
+            log.error(f'Online acquisition ip AddressTerritory Failure, error message: {e}')
             return None
 
 
 @sync_to_async
 def get_location_offline(ip: str) -> dict | None:
     """
-    离线获取 ip 地址属地，无法保证准确率，100%可用
+    Offline access ip AddressTerritory,Unable to guarantee accuracy,100%Available
 
     :param ip:
     :return:
@@ -71,7 +71,7 @@ def get_location_offline(ip: str) -> dict | None:
             'city': data[3] if data[3] != '0' else None,
         }
     except Exception as e:
-        log.error(f'离线获取 ip 地址属地失败，错误信息：{e}')
+        log.error(f'Offline access ip AddressTerritory Failure,error message: {e}')
         return None
 
 

@@ -21,7 +21,7 @@ class RoleService:
         async with async_db_session() as db:
             role = await role_dao.get_with_relation(db, pk)
             if not role:
-                raise errors.NotFoundError(msg='角色不存在')
+                raise errors.NotFoundError(msg='Role does not exist.')
             return role
 
     @staticmethod
@@ -45,7 +45,7 @@ class RoleService:
         async with async_db_session.begin() as db:
             role = await role_dao.get_by_name(db, obj.name)
             if role:
-                raise errors.ForbiddenError(msg='角色已存在')
+                raise errors.ForbiddenError(msg='Role already exists.')
             await role_dao.create(db, obj)
 
     @staticmethod
@@ -53,11 +53,11 @@ class RoleService:
         async with async_db_session.begin() as db:
             role = await role_dao.get(db, pk)
             if not role:
-                raise errors.NotFoundError(msg='角色不存在')
+                raise errors.NotFoundError(msg='Role does not exist.')
             if role.name != obj.name:
                 role = await role_dao.get_by_name(db, obj.name)
                 if role:
-                    raise errors.ForbiddenError(msg='角色已存在')
+                    raise errors.ForbiddenError(msg='Role already exists.')
             count = await role_dao.update(db, pk, obj)
             return count
 
@@ -66,11 +66,11 @@ class RoleService:
         async with async_db_session.begin() as db:
             role = await role_dao.get(db, pk)
             if not role:
-                raise errors.NotFoundError(msg='角色不存在')
+                raise errors.NotFoundError(msg='Role does not exist.')
             for menu_id in menu_ids.menus:
                 menu = await menu_dao.get(db, menu_id)
                 if not menu:
-                    raise errors.NotFoundError(msg='菜单不存在')
+                    raise errors.NotFoundError(msg='Menu does not exist.')
             count = await role_dao.update_menus(db, pk, menu_ids)
             await redis_client.delete_prefix(f'{settings.PERMISSION_REDIS_PREFIX}:{request.user.uuid}')
             return count

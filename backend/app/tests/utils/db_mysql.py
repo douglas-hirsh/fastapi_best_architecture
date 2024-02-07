@@ -16,7 +16,7 @@ test_async_engine, test_async_db_session = create_engine_and_session(TEST_SQLALC
 
 
 async def override_get_db() -> AsyncSession:
-    """session 生成器"""
+    """session Generator"""
     session = test_async_db_session()
     try:
         yield session

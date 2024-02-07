@@ -13,14 +13,14 @@ router = APIRouter()
 
 @router.get(
     '/server',
-    summary='server 监控',
+    summary='server monitor',
     dependencies=[
         Depends(RequestPermission('sys:monitor:server')),
         DependsJwtAuth,
     ],
 )
 async def get_server_info() -> ResponseModel:
-    """IO密集型任务，使用线程池尽量减少性能损耗"""
+    """IOIntensive task.,Use thread pool to minimize performance loss"""
     data = {
         'cpu': await run_in_threadpool(server_info.get_cpu_info),
         'mem': await run_in_threadpool(server_info.get_mem_info),

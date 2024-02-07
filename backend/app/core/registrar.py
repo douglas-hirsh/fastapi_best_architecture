@@ -23,22 +23,22 @@ from backend.app.utils.serializers import MsgSpecJSONResponse
 @asynccontextmanager
 async def register_init(app: FastAPI):
     """
-    启动初始化
+    Start initialization
 
     :return:
     """
-    # 创建数据库表
+    # Create database table.
     await create_table()
-    # 连接 redis
+    # Connection redis
     await redis_client.open()
-    # 初始化 limiter
+    # Initialize limiter
     await FastAPILimiter.init(redis_client, prefix=settings.LIMITER_REDIS_PREFIX, http_callback=http_limit_callback)
 
     yield
 
-    # 关闭 redis 连接
+    # Close redis Connection
     await redis_client.close()
-    # 关闭 limiter
+    # Close limiter
     await FastAPILimiter.close()
 
 
@@ -55,19 +55,19 @@ def register_app():
         lifespan=register_init,
     )
 
-    # 静态文件
+    # Static file
     register_static_file(app)
 
-    # 中间件
+    # middleware
     register_middleware(app)
 
-    # 路由
+    # route
     register_router(app)
 
-    # 分页
+    # pagination
     register_page(app)
 
-    # 全局异常处理
+    # Global exception handling
     register_exception(app)
 
     return app
@@ -75,7 +75,7 @@ def register_app():
 
 def register_static_file(app: FastAPI):
     """
-    静态文件交互开发模式, 生产使用 nginx 静态资源服务
+    Static fileDevelop interactive mode, Production use nginx Static resource service
 
     :param app:
     :return:
@@ -92,7 +92,7 @@ def register_static_file(app: FastAPI):
 
 def register_middleware(app: FastAPI):
     """
-    中间件，执行顺序从下往上
+    middleware,Execution order from bottom to top
 
     :param app:
     :return:
@@ -128,7 +128,7 @@ def register_middleware(app: FastAPI):
 
 def register_router(app: FastAPI):
     """
-    路由
+    route
 
     :param app: FastAPI
     :return:
@@ -145,7 +145,7 @@ def register_router(app: FastAPI):
 
 def register_page(app: FastAPI):
     """
-    分页查询
+    paginationInquiry
 
     :param app:
     :return:

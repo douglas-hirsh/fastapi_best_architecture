@@ -11,7 +11,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 某些包可能存在同步不及时导致安装失败的情况，可更改为官方源：https://pypi.org/simple
+# Some packages may have installation failures due to asynchronous synchronization.,Can be changed to official source.: https://pypi.org/simple
 RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple \
     && pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
 

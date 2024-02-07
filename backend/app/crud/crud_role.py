@@ -54,7 +54,7 @@ class CRUDRole(CRUDBase[Role, CreateRoleParam, UpdateRoleParam]):
 
     async def update_menus(self, db, role_id: int, menu_ids: UpdateRoleMenuParam) -> int:
         current_role = await self.get_with_relation(db, role_id)
-        # 更新菜单
+        # Update menu
         menus = await db.execute(select(Menu).where(Menu.id.in_(menu_ids.menus)))
         current_role.menus = menus.scalars().all()
         return len(current_role.menus)

@@ -18,7 +18,7 @@ class DictTypeService:
         async with async_db_session.begin() as db:
             dict_type = await dict_type_dao.get_by_code(db, obj.code)
             if dict_type:
-                raise errors.ForbiddenError(msg='字典类型已存在')
+                raise errors.ForbiddenError(msg='Dictionary type already exists.')
             await dict_type_dao.create(db, obj)
 
     @staticmethod
@@ -26,10 +26,10 @@ class DictTypeService:
         async with async_db_session.begin() as db:
             dict_type = await dict_type_dao.get(db, pk)
             if not dict_type:
-                raise errors.NotFoundError(msg='字典类型不存在')
+                raise errors.NotFoundError(msg='Dictionary type does not exist.')
             if dict_type.code != obj.code:
                 if await dict_type_dao.get_by_code(db, obj.code):
-                    raise errors.ForbiddenError(msg='字典类型已存在')
+                    raise errors.ForbiddenError(msg='Dictionary type already exists.')
             count = await dict_type_dao.update(db, pk, obj)
             return count
 

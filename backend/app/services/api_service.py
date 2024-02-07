@@ -17,7 +17,7 @@ class ApiService:
         async with async_db_session() as db:
             api = await api_dao.get(db, pk)
             if not api:
-                raise errors.NotFoundError(msg='接口不存在')
+                raise errors.NotFoundError(msg='Interface does not exist')
             return api
 
     @staticmethod
@@ -35,7 +35,7 @@ class ApiService:
         async with async_db_session.begin() as db:
             api = await api_dao.get_by_name(db, obj.name)
             if api:
-                raise errors.ForbiddenError(msg='接口已存在')
+                raise errors.ForbiddenError(msg='Interface already exists')
             await api_dao.create(db, obj)
 
     @staticmethod

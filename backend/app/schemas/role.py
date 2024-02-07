@@ -12,7 +12,7 @@ from backend.app.schemas.menu import GetMenuListDetails
 class RoleSchemaBase(SchemaBase):
     name: str
     data_scope: RoleDataScopeType = Field(
-        default=RoleDataScopeType.custom, description='权限范围（1：全部数据权限 2：自定义数据权限）'
+        default=RoleDataScopeType.custom, description='Scope of authority(1: All data permissions 2: Custom data permissions) '
     )
     status: StatusType = Field(default=StatusType.enable)
     remark: str | None = None
